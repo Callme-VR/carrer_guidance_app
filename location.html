@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Location - CareerGuide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/location.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">CareerGuide</div>
+    <button class="logout-btn" id="logoutBtn">
+      <i data-lucide="log-out" width="18"></i>
+      <span>Logout</span>
+    </button>
+  </header>
+
+  <main class="location-container">
+    <h1>Where do you want to study?</h1>
+    <p>Select your preferred location to discover top colleges and opportunities tailored for you.</p>
+    <div class="location-options">
+      <div class="location-card" id="indiaBtn">
+        <i data-lucide="flag" size="48"></i>
+        <h2>India</h2>
+        <p class="description">Explore the best colleges and universities across India.</p>
+      </div>
+      <div class="location-card" id="abroadBtn">
+        <i data-lucide="globe-2" size="48"></i>
+        <h2>Abroad</h2>
+        <p class="description">Discover international institutions and study abroad programs.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    document.getElementById("indiaBtn").addEventListener("click", () => {
+      localStorage.setItem("locationPreference", "india");
+      window.location.href = "colleges.html";
+    });
+
+    document.getElementById("abroadBtn").addEventListener("click", () => {
+      localStorage.setItem("locationPreference", "abroad");
+      window.location.href = "colleges.html";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        firebase.auth().signOut().then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Sign Out Error', error);
+        });
+    });
+  </script>
+</body>
+</html>

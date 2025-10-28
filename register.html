@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply for College - CareerGuide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">CareerGuide</div>
+    <button class="logout-btn" id="logoutBtn">
+      <i data-lucide="log-out" width="18"></i>
+      <span>Logout</span>
+    </button>
+  </header>
+
+  <main class="main-content">
+    <div class="register-container">
+      <div id="statusMessage">Loading college information...</div>
+      
+      <div id="collegeDetails" class="hidden">
+        <h1 id="collegeName"></h1>
+        
+        <div class="details-grid">
+          <div class="detail-item"><p><strong>Location:</strong> <span id="collegeLocation"></span></p></div>
+          <div class="detail-item"><p><strong>Ranking:</strong> <span id="collegeRanking"></span></p></div>
+          <div class="detail-item"><p><strong>Eligibility:</strong> <span id="collegeEligibility"></span></p></div>
+          <div class="detail-item"><p><strong>Scholarship:</strong> <span id="collegeScholarship"></span></p></div>
+          <div class="detail-item"><p><strong>Placement:</strong> <span id="collegePlacement"></span></p></div>
+        </div>
+
+        <div class="action-box">
+          <h3>Ready to take the next step?</h3>
+          <p>Take the aptitude test or proceed directly to the official application portal.</p>
+          <div class="action-buttons">
+            <a id="applyLink" href="#" target="_blank" class="action-btn primary-action">Apply Now</a>
+            <a id="aptitudeTestLink" href="aptitude.html" class="action-btn secondary-action">Take Aptitude Test</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="colleges.html" class="back-link">&larr; Back to College List</a>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <script>
+    lucide.createIcons();
+
+    const selectedCollegeId = localStorage.getItem("selectedCollegeId");
+    const statusMessage = document.getElementById("statusMessage");
+    const collegeDetails = document.getElementById("collegeDetails");
+    const applyLink = document.getElementById("applyLink");
+    const aptitudeTestLink = document.getElementById("aptitudeTestLink");
+
+    const elements = {
+        name: document.getElementById("collegeName"),
+        location: document.getElementById("collegeLocation"),
+        ranking: document.getElementById("collegeRanking"),
+        eligibility: document.getElementById("collegeEligibility"),
+        scholarship: document.getElementById("collegeScholarship"),
+        placement: document.getElementById("collegePlacement")
+    };
+
+    async function loadCollegeDetails() {
+        if (!selectedCollegeId) {
+            statusMessage.textContent = "Error: No college selected. Please go back.";
+            return;
+        }
+
+        try {
+            const docRef = db.collection("colleges").doc(selectedCollegeId);
+            const docSnap = await docRef.get();
+
+            if (docSnap.exists) {
+                const data = docSnap.data();
+                
+                elements.name.textContent = data.name || "N/A";
+                elements.location.textContent = data.location || "N/A";
+                elements.ranking.textContent = data.ranking || "N/A";
+                elements.eligibility.textContent = data.eligibility || "N/A";
+                elements.scholarship.textContent = data.scholarship || "N/A";
+                elements.placement.textContent = data.placement || "N/A";
+                
+                const collegeUrl = data.url;
+                if (collegeUrl) {
+                    applyLink.href = collegeUrl;
+                } else {
+                    applyLink.classList.add('disabled-link');
+                    applyLink.textContent = "Application URL Not Available";
+                    applyLink.onclick = (e) => e.preventDefault();
+                }
+
+                const testUrl = `aptitude.html?collegeId=${selectedCollegeId}`;
+                aptitudeTestLink.href = testUrl;
+
+                statusMessage.classList.add('hidden');
+                collegeDetails.classList.remove('hidden');
+            } else {
+                statusMessage.textContent = "Error: College data not found.";
+            }
+        } catch (error) {
+            console.error("Error loading college details:", error);
+            statusMessage.textContent = "An error occurred while fetching data.";
+        }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        firebase.auth().signOut().then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Sign Out Error', error);
+        });
+    });
+
+    loadCollegeDetails();
+  </script>
+</body>
+</html>

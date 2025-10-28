@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colleges - CareerGuide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/colleges.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">CareerGuide</div>
+    <button class="logout-btn" id="logoutBtn">
+      <i data-lucide="log-out" width="18"></i>
+      <span>Logout</span>
+    </button>
+  </header>
+
+  <main class="main-content">
+    <div class="page-header">
+      <a href="location.html" class="back-btn">
+        <i data-lucide="arrow-left" width="20"></i>
+        <span>Back to Locations</span>
+      </a>
+    </div>
+
+    <div class="page-header">
+        <h1>Available Colleges <span id="selectedLocation" class="location-tag"></span></h1>
+    </div>
+
+    <div id="collegeList">
+        <div class="loading">Loading colleges...</div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="js/firebase-config.js"></script>
+  
+  <script>
+    lucide.createIcons();
+
+    const locationPreference = localStorage.getItem("locationPreference") || 'N/A';
+    document.getElementById("selectedLocation").textContent = locationPreference;
+    const collegeList = document.getElementById("collegeList");
+
+    db.collection("colleges")
+      .where("location", "==", locationPreference.toLowerCase())
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          collegeList.innerHTML = "<p class='no-results'>No colleges found for this location.</p>";
+        } else {
+          let cardsHTML = '';
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = `
+              <div class="college-card">
+                <h3>${data.name}</h3>
+                <p><strong>Ranking:</strong> ${data.ranking}</p>
+                <p><strong>Eligibility:</strong> ${data.eligibility}</p>
+                <p><strong>Scholarship:</strong> ${data.scholarship}</p>
+                <p><strong>Placement:</strong> ${data.placement}</p>
+                <button class='apply-btn' onclick="applyToCollege('${data.url}')">Apply Now</button>
+              </div>
+            `;
+            cardsHTML += card;
+          });
+          collegeList.innerHTML = cardsHTML;
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching colleges: ", error);
+        collegeList.innerHTML = "<p class='no-results'>Could not load colleges. Please try again later.</p>";
+      });
+
+    function applyToCollege(collegeUrl) {
+      if (collegeUrl) {
+        window.open(collegeUrl, '_blank');
+      } else {
+        alert('Application URL not available.');
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        firebase.auth().signOut().then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Sign Out Error', error);
+        });
+    });
+  </script>
+</body>
+</html>

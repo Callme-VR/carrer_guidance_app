@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aptitude Test - CareerGuide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="stylesheet" href="css/aptitude.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">CareerGuide</div>
+        <button class="logout-btn" id="logoutBtn">
+            <i data-lucide="log-out" width="18"></i>
+            <span>Logout</span>
+        </button>
+    </header>
+
+    <main class="main-content">
+        <div class="test-container">
+            <div class="test-header">
+                <h1>Aptitude Test</h1>
+                <p id="collegeInfo">Please answer all questions to the best of your ability.</p>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div id="testArea"></div>
+
+            <button id="submitBtn" class="submit-btn">Submit Test</button>
+        </div>
+    </main>
+
+    <div id="resultModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Test Submitted!</h2>
+            <p>Your score has been successfully recorded.</p>
+            <div id="finalScore"></div>
+            <a href="colleges.html" class="modal-btn">Back to Colleges</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        lucide.createIcons();
+
+        const questions = [
+            { question: "If 5 workers can build 5 houses in 5 months, how long would it take 1 worker to build 1 house?", options: ["1 month", "5 months", "10 months", "25 months"], answer: "5 months" },
+            { question: "Which number comes next in the series: 2, 4, 8, 16, ___?", options: ["24", "30", "32", "64"], answer: "32" },
+            { question: "If 'CAB' is coded as '312', how is 'FED' coded?", options: ["654", "456", "564", "645"], answer: "654" },
+            { question: "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?", options: ["$0.10", "$0.05", "$0.50", "$1.00"], answer: "$0.05" }
+        ];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const collegeId = urlParams.get('collegeId');
+        let userId = null;
+
+        const testArea = document.getElementById('testArea');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultModal = document.getElementById('resultModal');
+        const finalScore = document.getElementById('finalScore');
+        const progressBar = document.getElementById('progressBar');
+
+        function renderQuestions() {
+            if (!collegeId) {
+                testArea.innerHTML = "<p>Error: College ID is missing. Cannot start test.</p>";
+                submitBtn.disabled = true;
+                return;
+            }
+            let questionsHTML = '';
+            questions.forEach((q, index) => {
+                questionsHTML += `
+                    <div class="question-card">
+                        <p>Q${index + 1}: ${q.question}</p>
+                        <div class="options-group">
+                            ${q.options.map(option => `
+                                <label>
+                                    <input type="radio" name="q${index}" value="${option}">
+                                    ${option}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            testArea.innerHTML = questionsHTML;
+            addOptionListeners();
+        }
+
+        function addOptionListeners() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', updateProgress);
+            });
+        }
+
+        function updateProgress() {
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answeredQuestions / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        submitBtn.addEventListener('click', async () => {
+            if (!userId || !collegeId) {
+                alert("Authentication or College ID not ready. Please try refreshing.");
+                return;
+            }
+
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked');
+            if (answeredQuestions.length < questions.length) {
+                alert("Please answer all questions before submitting.");
+                return;
+            }
+
+            let correctAnswers = 0;
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === q.answer) {
+                    correctAnswers++;
+                }
+            });
+
+            const percentageScore = (correctAnswers / questions.length) * 100;
+
+            try {
+                await db.collection("aptitude_scores").add({
+                    userId: userId,
+                    collegeId: collegeId,
+                    score: correctAnswers,
+                    total: questions.length,
+                    percentage: percentageScore,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                finalScore.textContent = `${correctAnswers} / ${questions.length}`;
+                resultModal.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error saving score:", error);
+                alert("Failed to submit score. Please check the console.");
+            }
+        });
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                userId = user.uid;
+                renderQuestions();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Sign Out Error', error);
+            });
+        });
+    </script>
+</body>
+</html>

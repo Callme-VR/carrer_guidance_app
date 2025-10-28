@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Career Guidance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-art">
+      <h1>CareerGuide</h1>
+      <p>Find your future. Your comprehensive guide to the best colleges and career paths.</p>
+    </div>
+    <div class="login-form">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Please select your role and enter your details to login.</p>
+
+      <div class="role-select">
+        <button class="role-btn" id="studentBtn" data-role="student">
+          <i data-lucide="user"></i>
+          <span>Student</span>
+        </button>
+        <button class="role-btn" id="adminBtn" data-role="admin">
+          <i data-lucide="shield"></i>
+          <span>Admin</span>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="input-field" placeholder="you@example.com" required />
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="input-field" placeholder="••••••••" required />
+      </div>
+
+      <button id="loginBtn" class="login-btn">Login</button>
+      <p id="message"></p>
+
+      <p class="signup-link">Don’t have an account? <a href="signup.html">Sign up here</a></p>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <script>
+    lucide.createIcons();
+
+    let userRole = null;
+    const studentBtn = document.getElementById('studentBtn');
+    const adminBtn = document.getElementById('adminBtn');
+
+    studentBtn.addEventListener('click', () => {
+      userRole = 'student';
+      studentBtn.classList.add('active');
+      adminBtn.classList.remove('active');
+    });
+
+    adminBtn.addEventListener('click', () => {
+      userRole = 'admin';
+      adminBtn.classList.add('active');
+      studentBtn.classList.remove('active');
+    });
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const messageEl = document.getElementById("message");
+
+      if (!userRole) {
+        messageEl.textContent = "Please select a role (Student or Admin).";
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          if (userRole === "admin") {
+            window.location.href = "admin-dashboard.html";
+          } else {
+            window.location.href = "location.html";
+          }
+        })
+        .catch(error => {
+          messageEl.textContent = error.message;
+        });
+    });
+  </script>
+</body>
+</html>

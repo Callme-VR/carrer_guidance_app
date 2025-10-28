@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --primary-color: #4F46E5;
+      --primary-hover: #4338CA;
+      --secondary-color: #F3F4F6;
+      --text-primary: #1F2937;
+      --text-secondary: #6B7280;
+      --border-color: #E5E7EB;
+      --white: #FFFFFF;
+      --sidebar-bg: #1F2937;
+      --sidebar-text: #D1D5DB;
+      --sidebar-active: var(--primary-color);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary-color);
+      color: var(--text-primary);
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .dashboard-layout {
+      display: flex;
+      width: 100%;
+    }
+    .sidebar {
+      width: 260px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      border-right: 1px solid var(--border-color);
+    }
+    .sidebar-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2rem;
+    }
+    .sidebar-nav .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--sidebar-text);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .sidebar-nav .nav-item.active, .sidebar-nav .nav-item:hover {
+      background-color: var(--sidebar-active);
+      color: var(--white);
+    }
+    .sidebar-nav .nav-item i {
+      margin-right: 0.75rem;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+    }
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--sidebar-text);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .logout-btn:hover {
+      background-color: #374151;
+      color: var(--white);
+    }
+    .logout-btn i {
+      margin-right: 0.75rem;
+    }
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .main-header {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 2rem;
+    }
+    .form-container, .list-container {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+    .form-container h2, .list-container h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+    }
+    .add-college input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .add-college input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .add-college button {
+      width: 100%;
+      padding: 0.875rem;
+      background-color: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .add-college button:hover {
+      background-color: var(--primary-hover);
+    }
+    .college-list {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    .college-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .college-card:hover {
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+    .college-card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .college-card p {
+      margin: 0.25rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+        .sidebar {
+            display: none; /* Hide sidebar on smaller screens, can be toggled with JS */
+        }
+        .main-content {
+            padding: 1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>CareerGuide</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <h1 class="main-header">Admin Dashboard</h1>
+      <div class="content-grid">
+        <div class="form-container">
+          <h2>Add New College</h2>
+          <section class="add-college">
+            <input type="text" id="collegeName" placeholder="College Name" required />
+            <input type="text" id="collegeLocation" placeholder="Location (India or Abroad)" required />
+            <input type="number" id="collegeRanking" placeholder="Ranking" required />
+            <input type="text" id="collegeEligibility" placeholder="Eligibility Criteria" required />
+            <input type="text" id="collegeScholarship" placeholder="Scholarship Details" required />
+            <input type="text" id="collegePlacement" placeholder="Placement Info" required />
+            <input type="url" id="collegeURL" placeholder="College Application Website URL" required />
+            <button id="saveCollegeBtn">Save College</button>
+          </section>
+        </div>
+        <div class="list-container">
+          <h2>Colleges List</h2>
+          <section class="college-list" id="collegeList">
+            <!-- Colleges will be displayed dynamically here -->
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
