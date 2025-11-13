@@ -64,6 +64,15 @@ The application features a dual login system for administrators and students, wi
 
 how to login/signup the project?
 
+Login Email- FOR (ADMIN)-admin1@gmail.com
+password-123456
+
+same also for the student login
+
+
+
+
+
 1-signup.html ->select,create account with your email and password,wait for second for account creation.
 
 2-after signup,you will be directed to login pages.
