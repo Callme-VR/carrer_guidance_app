@@ -61,14 +61,22 @@ The application features a dual login system for administrators and students, wi
    ```
 
 ### Default Authentication Credentials
-For testing purposes, you can use these default credentials:
 
-| User Type | Email | Password | Role |
-|-----------|-------|----------|------|
-| Administrator | admin@gmail.com | 123456 | Full access to admin dashboard |
-| Student | student@gmail.com | 123456 | Access to college listings and aptitude test |
+how to login/signup the project?
 
-Note: In a production environment, you should create your own secure credentials and implement proper authentication flows.
+1-signup.html ->select,create account with your email and password,wait for second for account creation.
+
+2-after signup,you will be directed to login pages.
+
+3-In login page ,firstly select admin,then login with same email which you used to signup.
+4-Filled the detail of the your colleges,but in Location (india,Abroad),not like up,usa ,only fill the  india,Abroad.
+
+5-after successfull colleges add to list,
+then came back to login page 
+
+6- try to select the student ,then login same you signup,then you clearly see the result.
+
+
 
 ### Firestore Security Rules
 Configure your Firestore rules to ensure proper access control:
@@ -93,21 +101,7 @@ service cloud.firestore {
 ### Data Consistency
 The location field is stored and queried in lowercase to ensure consistency across the application.
 
-## 📝 Usage Instructions
 
-### For Administrators
-1. Navigate to `login.html`
-2. Select "Admin Login"
-3. Enter administrator credentials (admin@gmail.com / 123456)
-4. Access the admin dashboard to manage college data
-
-### For Students
-1. Navigate to `signup.html` to create a new account or use the default student account
-2. Navigate to `login.html` 
-3. Select "Student Login"
-4. Enter student credentials (student@gmail.com / 123456)
-5. Select location preference to view relevant colleges
-6. Access college information and application links
 
 ## 🔐 User Roles and Permissions
 
