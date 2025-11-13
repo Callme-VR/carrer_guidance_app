@@ -6,7 +6,7 @@
   <title>Select Location - CareerGuide</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-  <link rel="stylesheet" href="css/location.css">
+  <link rel="stylesheet" href="location.css">
 </head>
 <body>
   <header class="header">
@@ -36,23 +36,23 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="js/firebase-config.js"></script>
+  <script src="../js/firebase-config.js"></script>
   <script>
     lucide.createIcons();
 
     document.getElementById("indiaBtn").addEventListener("click", () => {
       localStorage.setItem("locationPreference", "india");
-      window.location.href = "colleges.html";
+      window.location.href = "../colleges/colleges.html";
     });
 
     document.getElementById("abroadBtn").addEventListener("click", () => {
       localStorage.setItem("locationPreference", "abroad");
-      window.location.href = "colleges.html";
+      window.location.href = "../colleges/colleges.html";
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
         firebase.auth().signOut().then(() => {
-            window.location.href = 'login.html';
+            window.location.href = '../login/login.html';
         }).catch((error) => {
             console.error('Sign Out Error', error);
         });

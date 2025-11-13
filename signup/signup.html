@@ -6,7 +6,7 @@
   <title>Sign Up - Career Guidance</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-  <link rel="stylesheet" href="css/signup.css" />
+  <link rel="stylesheet" href="signup.css" />
 </head>
 <body>
   <div class="signup-container">
@@ -36,7 +36,7 @@
       <button id="signupBtn" class="signup-btn">Create Account</button>
       <p id="message"></p>
 
-      <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+      <p class="login-link">Already have an account? <a href="../login/login.html">Log in</a></p>
     </div>
   </div>
 
@@ -44,7 +44,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="js/firebase-config.js"></script>
+  <script src="../js/firebase-config.js"></script>
 
   <script>
     lucide.createIcons();
@@ -86,7 +86,7 @@
             messageElement.classList.add('message-success');
             
             setTimeout(() => {
-                window.location.href = "login.html"; 
+                window.location.href = "../login/login.html"; 
             }, 1500);
 
         } catch (error) {
