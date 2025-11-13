@@ -2,6 +2,7 @@
 
 // Import Firebase from CDN (make sure these scripts are in your HTML too)
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyA6MyVyJcMQXYC59BLtM5sdjL-NUMPfUow",
   authDomain: "carrer-guidance-app-77cff.firebaseapp.com",
